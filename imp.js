@@ -94,7 +94,7 @@ function interp_B(b, store)
     console.log(`failed to interpret: ${b} \nwith store: ${store}`);	
 } 	  
 
-// state store
+// use a global variable to keep track of variables
 var cache = {}
 
 function interp_C(c, store)  	
@@ -104,18 +104,25 @@ function interp_C(c, store)
     }
     else if (c.form == ':=') {
         // assign a variable to the store
+
+        // evaluate a
         var subComm = interp_A(c.a, store);
+
+        // update the cache with a new key/value pair
         cache[c.x] = subComm;
+
+        // define the store function
         store = (x) => { 
             return cache[x];
         };
+
         return store;
     }
     else if (c.form == ';') {
         // execute two commands in sequence
-        var store0 = interp_C(c.c0, store);
-        var store1 = interp_C(c.c1, store0);
-        return store1;
+        store = interp_C(c.c0, store);
+        store = interp_C(c.c1, store);
+        return store;
 
     }
     else if (c.form == 'if') {
