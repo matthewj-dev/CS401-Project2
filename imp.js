@@ -37,37 +37,49 @@ exports.interp_C = interp_C;
 
 function interp_A(a, store)  	
 {
-    if (a.form == 'x') 
-	// store should be a function that takes a variable name, like 'x', and returns its value  	
-	return store(a.x); 
-    else if (a.form == 'n')	
-	// a number is just the constant stored in the AST node  	
-	return a.n; 
-    else if (a.form == '+') 	  
-	// A sum AST node is interpreted as the sum of the interpretations of each sub-expression 
-    return interp_A(a.a0, store) + interp_A(a.a1, store); 	  
-    else if (a.form == '*') // TODO: Add interpretations for '*' and '-' expressions
-    return interp_A(a.a0, store) * interp_A(a.a1, store);
-    else if (a.form == '-')
-    return interp_A(a.a0, store) - interp_A(a.a1, store);
+    if (a.form == 'x') {
+        // store should be a function that takes a variable name, like 'x', and returns its value  	
+	    return store(a.x); 
+    }
+    else if (a.form == 'n')	{
+        // a number is just the constant stored in the AST node  	
+	    return a.n; 
+    }
+    else if (a.form == '+') {
+        // A sum AST node is interpreted as the sum of the interpretations of each sub-expression 
+        return interp_A(a.a0, store) + interp_A(a.a1, store);
+    }	  
+    else if (a.form == '*') { // TODO: Add interpretations for '*' and '-' expressions
+        // a product AST node is interpreted as the product of the interpretations of each sub-expression
+        return interp_A(a.a0, store) * interp_A(a.a1, store);
+    }
+    else if (a.form == '-') {
+        // A sum AST node is interpreted as the sum of the interpretations of each sub-expression 
+        return interp_A(a.a0, store) - interp_A(a.a1, store);
+    }
     console.log(`failed to interpret: ${a} \nwith store: ${store}`);	
 }
 
 function interp_B(b, store) 
 { 
     // TODO: What other boolean expressions need to be handled in this function? 
-    if (b.form == 'not') 
-	return !interp_B(b.b, store);  	
-    else if (b.form == 'true') 
-	return true;  	
+    if (b.form == 'not') {
+        return !interp_B(b.b, store); 
+    }
+    else if (b.form == 'true') {
+        return true;
+    }
+	  	
     console.log(`failed to interpret: ${b} \nwith store: ${store}`);	
 } 	  
 
 function interp_C(c, store)  	
-{	
-    if (c.form == 'skip') 
-	return store; 	  
-    // TODO: What other commands need to handled in this function? 
+{	// TODO: What other commands need to handled in this function? 
+    if (c.form == 'skip') {
+        return store; 
+    }
+    
+    
     console.log(`failed to interpret: ${c} \nwith store: ${store}`); 	  
 }
 
