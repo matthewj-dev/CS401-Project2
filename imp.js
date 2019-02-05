@@ -94,6 +94,9 @@ function interp_B(b, store)
     console.log(`failed to interpret: ${b} \nwith store: ${store}`);	
 } 	  
 
+// state store
+var cache = {}
+
 function interp_C(c, store)  	
 {	// TODO: What other commands need to handled in this function? 
     if (c.form == 'skip') {
@@ -102,9 +105,9 @@ function interp_C(c, store)
     else if (c.form == ':=') {
         // assign a variable to the store
         var subComm = interp_A(c.a, store);
-        var myVarChar = c.x;
-        store = (p) => { 
-            if (p == c.x) return subComm;
+        cache[c.x] = subComm;
+        store = (x) => { 
+            return cache[x];
         };
         return store;
     }
@@ -127,8 +130,9 @@ function interp_C(c, store)
     else if (c.form == 'while') {
         // evaluate a command while b is true
         while(interp_B(c.b, store)) {
-            return interp_C(c.c, store);
+            store = interp_C(c.c, store);
         }
+        return store;
     }
     
     console.log(`failed to interpret: ${c} \nwith store: ${store}`); 	  
