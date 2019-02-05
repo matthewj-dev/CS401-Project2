@@ -7,6 +7,8 @@ settings.json
 
 .mypy_cache
 
+testScript.js
+
 # Logs
 logs
 *.log

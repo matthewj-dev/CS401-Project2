@@ -57,6 +57,7 @@ function interp_A(a, store)
         // A sum AST node is interpreted as the sum of the interpretations of each sub-expression 
         return interp_A(a.a0, store) - interp_A(a.a1, store);
     }
+
     console.log(`failed to interpret: ${a} \nwith store: ${store}`);	
 }
 
@@ -66,8 +67,28 @@ function interp_B(b, store)
     if (b.form == 'not') {
         return !interp_B(b.b, store); 
     }
+    else if (b.form == 'and') {
+        // evalutation of b0 ^ b1
+        return (interp_B(b.b0, store) && interp_B(b.b1, store));
+    }
+    else if (b.form == 'or') {
+        // evalutation of b0 v b1
+        return (interp_B(b.b0, store) || interp_B(b.b1, store));
+    }
     else if (b.form == 'true') {
         return true;
+    }
+    else if (b.form == 'false') {
+        // return false
+        return false;
+    }
+    else if (b.form == '=') {
+        // evalutate two statements and return if they are equal
+        return (interp_A(b.a0, store) == interp_A(b.a1, store));
+    }
+    else if (b.form == '<=') {
+        // evalutate two statements and return if they are inclusive less than
+        return (interp_A(b.a0, store) <= interp_A(b.a1, store));
     }
 	  	
     console.log(`failed to interpret: ${b} \nwith store: ${store}`);	
@@ -78,7 +99,37 @@ function interp_C(c, store)
     if (c.form == 'skip') {
         return store; 
     }
-    
+    else if (c.form == ':=') {
+        // assign a variable to the store
+        var subComm = interp_A(c.a, store);
+        var myVarChar = c.x;
+        store = (p) => { 
+            if (p == c.x) return subComm;
+        };
+        return store;
+    }
+    else if (c.form == ';') {
+        // execute two commands in sequence
+        var store0 = interp_C(c.c0, store);
+        var store1 = interp_C(c.c1, store0);
+        return store1;
+
+    }
+    else if (c.form == 'if') {
+        // evaluate an if-else statement
+        if (interp_B(c.b, store)) {
+            return interp_C(c.c0, store);
+        }
+        else {
+            return interp_C(c.c1, store);
+        }
+    }
+    else if (c.form == 'while') {
+        // evaluate a command while b is true
+        while(interp_B(c.b, store)) {
+            return interp_C(c.c, store);
+        }
+    }
     
     console.log(`failed to interpret: ${c} \nwith store: ${store}`); 	  
 }
