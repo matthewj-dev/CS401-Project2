@@ -45,7 +45,7 @@ function interp_A(a, store)
         // a number is just the constant stored in the AST node  	
 	    return a.n; 
     }
-    else if (a.form == '+') {
+    else if (a.form == '+____') {
         // A sum AST node is interpreted as the sum of the interpretations of each sub-expression 
         return interp_A(a.a0, store) + interp_A(a.a1, store);
     }	  
