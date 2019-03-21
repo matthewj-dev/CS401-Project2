@@ -69,7 +69,7 @@ function interp_B(b, store)
     }
     else if (b.form == 'and') {
         // evalutation of b0 ^ b1
-        return (interp_B(b.b0, store) && interp_B(b.b1, store));
+        return (interp_B(b.b0, store) && interp_A(b.b1, store));
     }
     else if (b.form == 'or') {
         // evalutation of b0 v b1
